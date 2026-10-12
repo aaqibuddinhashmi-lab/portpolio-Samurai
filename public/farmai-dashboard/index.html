@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FarmAI — Dashboard</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #fafaf9;
+      --surface: #ffffff;
+      --surface-elevated: #ffffff;
+      --border: #e7e5e4;
+      --foreground: #1c1917;
+      --muted: #78716c;
+      --secondary-bg: #f5f5f4;
+      --primary: #16a34a;
+      --primary-light: rgba(22,163,74,0.1);
+      --info: #0284c7;
+      --info-light: rgba(2,132,199,0.1);
+      --accent: #7c3aed;
+      --accent-light: rgba(124,58,237,0.1);
+      --success: #16a34a;
+      --success-light: rgba(22,163,74,0.1);
+      --radius: 12px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--foreground);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── Sidebar (desktop) ─── */
+    .sidebar {
+      display: none;
+      position: fixed;
+      left: 0; top: 0;
+      width: 256px;
+      height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      flex-direction: column;
+      z-index: 50;
+      padding: 0;
+    }
+    @media (min-width: 769px) { .sidebar { display: flex; } }
+
+    .sidebar-logo {
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sidebar-logo .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--primary);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 800; font-size: 16px;
+    }
+    .sidebar-logo span {
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: -0.5px;
+    }
+
+    .sidebar-nav { flex: 1; padding: 0 16px; }
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-bottom: 2px;
+    }
+    .sidebar-nav a:hover { background: var(--secondary-bg); color: var(--foreground); }
+    .sidebar-nav a.active {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--foreground);
+      font-weight: 600;
+    }
+    .sidebar-nav a svg { width: 20px; height: 20px; }
+
+    .sidebar-profile {
+      padding: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .sidebar-profile-inner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .sidebar-profile-inner:hover { background: var(--secondary-bg); }
+    .sidebar-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--secondary-bg);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--foreground);
+    }
+    .sidebar-avatar svg { width: 20px; height: 20px; }
+    .sidebar-profile-info { flex: 1; min-width: 0; }
+    .sidebar-profile-info .name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--foreground);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: capitalize;
+    }
+    .sidebar-profile-info .email {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ─── Bottom Nav (mobile) ─── */
+    .bottom-nav {
+      display: flex;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 64px;
+      background: var(--surface-elevated);
+      border-top: 1px solid var(--border);
+      z-index: 50;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 8px;
+      box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05);
+    }
+    @media (min-width: 769px) { .bottom-nav { display: none; } }
+    .bottom-nav a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      width: 100%;
+      height: 100%;
+      text-decoration: none;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .bottom-nav a.active { color: var(--primary); }
+    .bottom-nav a svg { width: 24px; height: 24px; }
+    .bottom-nav a span { font-size: 10px; font-weight: 500; }
+
+    /* ─── Main content ─── */
+    .main {
+      padding: 32px 16px 96px;
+      max-width: 960px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    @media (min-width: 769px) {
+      .main { margin-left: 256px; padding: 48px 32px 48px; max-width: calc(960px + 256px); width: auto; }
+    }
+
+    /* ─── Welcome Header ─── */
+    .welcome-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      padding: 16px 0;
+    }
+    .welcome-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .welcome-location {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--secondary-bg);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 500;
+      color: rgba(28,25,23,0.8);
+    }
+    .welcome-dot { color: rgba(120,113,108,0.4); }
+    .welcome-header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 500;
+      color: var(--foreground);
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      font-family: Georgia, 'Times New Roman', serif;
+      text-transform: capitalize;
+    }
+    .welcome-header .status-line {
+      font-size: 18px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .welcome-mascot {
+      display: none;
+      width: 144px; height: 144px;
+      flex-shrink: 0;
+    }
+    @media (min-width: 769px) { .welcome-mascot { display: block; } }
+    .welcome-mascot img { width: 100%; height: 100%; object-fit: contain; }
+
+    /* ─── Grid Layout ─── */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+    @media (min-width: 769px) { .dashboard-grid { grid-template-columns: 1fr 1fr; } }
+
+    /* ─── Card (base) ─── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover { border-color: rgba(22,163,74,0.2); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+
+    /* ─── Crop Overview Card ─── */
+    .crop-card .crop-bg-icon {
+      position: absolute;
+      top: 0; right: 0;
+      padding: 16px;
+      opacity: 0.1;
+      color: var(--primary);
+    }
+    .crop-card .crop-bg-icon svg { width: 96px; height: 96px; }
+    .crop-card .crop-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .badge { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 6px; }
+    .badge-success { background: var(--success-light); color: var(--success); }
+    .crop-card .day-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .crop-card .crop-name { font-size: 24px; font-weight: 700; color: var(--foreground); margin-bottom: 4px; }
+    .crop-card .sown-date { font-size: 14px; color: var(--muted); }
+    .crop-progress { margin-top: 24px; }
+    .crop-progress .progress-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .progress-bar-bg { flex: 1; height: 8px; background: var(--secondary-bg); border-radius: 999px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; width: 45%; background: var(--success); border-radius: 999px; }
+    .stage-label { font-size: 12px; font-weight: 500; color: var(--muted); }
+    .crop-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .crop-footer span { font-size: 12px; color: var(--muted); }
+
+    /* ─── Weather Card ─── */
+    .weather-card .weather-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .weather-card .weather-label { font-size: 14px; font-weight: 500; color: var(--muted); margin-bottom: 4px; }
+    .weather-card .weather-temp { display: flex; align-items: baseline; gap: 4px; }
+    .weather-card .weather-temp h3 { font-size: 40px; font-weight: 700; color: var(--foreground); }
+    .weather-card .weather-temp span { font-size: 18px; color: var(--muted); }
+    .weather-card .weather-cond { font-size: 14px; font-weight: 500; color: var(--foreground); margin-top: 4px; }
+    .weather-icon-circle {
+      width: 52px; height: 52px;
+      background: var(--info-light);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--info);
+    }
+    .weather-icon-circle svg { width: 28px; height: 28px; }
+    .weather-stats { margin-top: 24px; }
+    .weather-stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .weather-stat { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--muted); }
+    .weather-stat svg { width: 14px; height: 14px; }
+    .weather-labels { display: flex; justify-content: space-between; margin-top: 4px; }
+    .weather-labels span { font-size: 12px; color: var(--muted); }
+    .weather-divider { height: 1px; background: var(--border); margin: 12px 0; }
+    .weather-tip {
+      font-size: 12px; font-weight: 500; color: var(--info);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .weather-tip .pulse {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--info);
+      display: inline-block;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+
+    /* ─── Quick Actions ─── */
+    .quick-actions { margin-top: 32px; }
+    .quick-actions h3 { font-size: 18px; font-weight: 600; color: var(--foreground); margin-bottom: 16px; }
+    .actions-grid {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding-bottom: 12px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+    }
+    @media (min-width: 769px) {
+      .actions-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        overflow-x: visible;
+        padding-bottom: 0;
+      }
+    }
+    .action-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: var(--foreground);
+      flex: 0 0 250px;
+    }
+    @media (min-width: 769px) {
+      .action-card {
+        flex: initial;
+      }
+    }
+    .action-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .action-card .blob {
+      position: absolute;
+      top: -16px; right: -16px;
+      width: 96px; height: 96px;
+      border-radius: 0 0 0 100%;
+      transition: background 0.3s;
+    }
+    .action-icon {
+      width: 48px; height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s;
+    }
+    .action-card:hover .action-icon { transform: scale(1.1); }
+    .action-icon svg { width: 24px; height: 24px; }
+    .action-card h4 { font-size: 18px; font-weight: 600; }
+    .action-card p { font-size: 14px; color: var(--muted); margin-top: 4px; }
+    .action-cta {
+      margin-top: auto;
+      padding-top: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: all 0.3s;
+    }
+    .action-card:hover .action-cta { opacity: 1; transform: translateX(0); }
+
+    .action-card--primary:hover { border-color: rgba(22,163,74,0.5); }
+    .action-card--primary .blob { background: var(--primary-light); }
+    .action-card--primary:hover .blob { background: rgba(22,163,74,0.1); }
+    .action-card--primary .action-icon { background: var(--primary-light); color: var(--primary); }
+    .action-card--primary .action-cta { color: var(--primary); }
+
+    .action-card--info:hover { border-color: rgba(2,132,199,0.5); }
+    .action-card--info .blob { background: var(--info-light); }
+    .action-card--info:hover .blob { background: rgba(2,132,199,0.1); }
+    .action-card--info .action-icon { background: var(--info-light); color: var(--info); }
+    .action-card--info .action-cta { color: var(--info); }
+
+    .action-card--accent:hover { border-color: rgba(124,58,237,0.5); }
+    .action-card--accent .blob { background: var(--accent-light); }
+    .action-card--accent:hover .blob { background: rgba(124,58,237,0.1); }
+    .action-card--accent .action-icon { background: var(--accent-light); color: var(--accent); }
+    .action-card--accent .action-cta { color: var(--accent); }
+
+    /* ─── Setup Progress ─── */
+    .setup-card { margin-top: 32px; }
+    .setup-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .setup-header h3 { font-weight: 600; color: var(--foreground); }
+    .setup-badge {
+      font-size: 12px;
+      font-family: monospace;
+      background: var(--secondary-bg);
+      padding: 4px 8px;
+      border-radius: 4px;
+      color: var(--foreground);
+    }
+    .setup-steps { display: flex; flex-direction: column; gap: 16px; }
+    .setup-step { display: flex; align-items: center; gap: 16px; }
+    .setup-step-icon { flex-shrink: 0; width: 24px; height: 24px; }
+    .setup-step-icon.done { color: var(--success); }
+    .setup-step-icon.pending { color: var(--primary); }
+    .setup-step .step-text { flex: 1; }
+    .setup-step .step-text p { font-weight: 500; color: var(--foreground); }
+    .setup-step .step-text .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .setup-step.done .step-text p { text-decoration: line-through; opacity: 0.5; text-decoration-color: rgba(120,113,108,0.3); }
+    .setup-start-btn {
+      padding: 4px 12px;
+      background: var(--primary);
+      color: white;
+      font-size: 12px;
+      font-weight: 500;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    /* ─── Demo Badge ─── */
+    .demo-banner {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 100;
+      background: var(--primary);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(22,163,74,0.3);
+    }
+    @media (min-width: 769px) {
+      .demo-banner { top: 16px; right: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-banner">📋 Design Preview</div>
+
+  <!-- ═══ Sidebar (desktop) ═══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🌱</div>
+      <span>FarmAI</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="index.html" class="active">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Home
+      </a>
+      <a href="crops.html">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>
+        My Crops
+      </a>
+      <a href="disease.html">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
+        Disease Scan
+      </a>
+      <a href="weather.html">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>
+        Weather
+      </a>
+      <a href="assistant.html">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+        AI Assistant
+      </a>
+      <a href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        Settings
+      </a>
+    </nav>
+    <div class="sidebar-profile">
+      <div class="sidebar-profile-inner">
+        <div class="sidebar-avatar">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="sidebar-profile-info">
+          <div class="name">Ravi Kumar</div>
+          <div class="email">ravi.kumar@farmer.in</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══ Bottom Nav (mobile) ═══ -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="active">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <span>Home</span>
+    </a>
+    <a href="crops.html">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>
+      <span>Crops</span>
+    </a>
+    <a href="disease.html">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
+      <span>Scan</span>
+    </a>
+    <a href="weather.html">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>
+      <span>Weather</span>
+    </a>
+    <a href="assistant.html">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+      <span>Assistant</span>
+    </a>
+  </nav>
+
+  <!-- ═══ Dashboard Content ═══ -->
+  <main class="main">
+
+    <!-- Welcome Header -->
+    <div class="welcome-header">
+      <div>
+        <div class="welcome-meta">
+          <span class="welcome-location">📍 Ranchi, Jharkhand</span>
+          <span class="welcome-dot">•</span>
+          <span id="current-date"></span>
+        </div>
+        <h1 id="greeting"></h1>
+        <p class="status-line">Your Rice crop is growing strong 🌾</p>
+      </div>
+      <div class="welcome-mascot">
+        <img src="farmer-2.png" alt="Farmer mascot" />
+      </div>
+    </div>
+
+    <!-- Crop Overview + Weather -->
+    <div class="dashboard-grid">
+
+      <!-- Crop Overview -->
+      <div class="card crop-card">
+        <div class="crop-bg-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>
+        </div>
+        <div class="crop-header">
+          <span class="badge badge-success">🟢 Monitoring Active</span>
+          <span class="day-label">Day 45</span>
+        </div>
+        <h2 class="crop-name">Rice (Basmati)</h2>
+        <p class="sown-date">Sown on Jul 12, 2026</p>
+        <div class="crop-progress">
+          <div class="progress-row">
+            <div class="progress-bar-bg"><div class="progress-bar-fill"></div></div>
+            <span class="stage-label">Vegetative</span>
+          </div>
+        </div>
+        <div class="crop-footer">
+          <span>+2 more crops registered</span>
+          <span style="font-size:12px;font-weight:500;color:var(--primary);opacity:0;">View All →</span>
+        </div>
+      </div>
+
+      <!-- Weather Snapshot -->
+      <div class="card weather-card">
+        <div class="weather-top">
+          <div>
+            <p class="weather-label">Today's Weather</p>
+            <div class="weather-temp">
+              <h3>32</h3>
+              <span>°C</span>
+            </div>
+            <p class="weather-cond">Partly Cloudy</p>
+          </div>
+          <div class="weather-icon-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>
+          </div>
+        </div>
+        <div class="weather-stats">
+          <div class="weather-stats-grid">
+            <div class="weather-stat">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
+              <span>72%</span>
+            </div>
+            <div class="weather-stat">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></svg>
+              <span>35%</span>
+            </div>
+            <div class="weather-stat">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
+              <span>34°</span>
+            </div>
+          </div>
+          <div class="weather-labels">
+            <span>Humidity</span>
+            <span>Rain</span>
+            <span>Feels Like</span>
+          </div>
+          <div class="weather-divider"></div>
+          <p class="weather-tip">
+            <span class="pulse"></span>
+            Light rain possible — good day for fertiliser application.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <h3>Quick Actions</h3>
+      <div class="actions-grid">
+        <a href="disease.html" class="action-card action-card--primary">
+          <div class="blob"></div>
+          <div class="action-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div>
+            <h4>Scan Disease</h4>
+            <p>Upload a leaf photo for instant AI diagnosis</p>
+          </div>
+          <div class="action-cta">Start Scan →</div>
+        </a>
+        <a href="weather.html" class="action-card action-card--info">
+          <div class="blob"></div>
+          <div class="action-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>
+          </div>
+          <div>
+            <h4>Check Weather</h4>
+            <p>View hyper-local forecast and farming tips</p>
+          </div>
+          <div class="action-cta">View Forecast →</div>
+        </a>
+        <a href="assistant.html" class="action-card action-card--accent">
+          <div class="blob"></div>
+          <div class="action-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+          </div>
+          <div>
+            <h4>Ask AI Assistant</h4>
+            <p>Get farming advice in your language</p>
+          </div>
+          <div class="action-cta">Chat Now →</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Setup Progress -->
+    <div class="card setup-card">
+      <div class="setup-header">
+        <h3>Getting Started</h3>
+        <span class="setup-badge">2/3 complete</span>
+      </div>
+      <div class="setup-steps">
+        <div class="setup-step done">
+          <div class="setup-step-icon done">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="step-text">
+            <p>Complete your farm profile</p>
+          </div>
+        </div>
+        <div class="setup-step done">
+          <div class="setup-step-icon done">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="step-text">
+            <p>Scan your first leaf</p>
+            <div class="sub">Upload a leaf photo for AI disease detection</div>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="setup-step-icon pending">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+          </div>
+          <div class="step-text">
+            <p>Set up weather alerts</p>
+            <div class="sub">Get smart notifications for your farm</div>
+          </div>
+          <button class="setup-start-btn">Start</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Dynamic greeting
+    const hour = new Date().getHours();
+    let greeting = 'Good Evening';
+    if (hour < 12) greeting = 'Good Morning';
+    else if (hour < 18) greeting = 'Good Afternoon';
+    document.getElementById('greeting').textContent = greeting + ', Ravi 👋';
+
+    // Dynamic date
+    const dateStr = new Intl.DateTimeFormat('en-IN', {
+      weekday: 'long', month: 'long', day: 'numeric'
+    }).format(new Date());
+    document.getElementById('current-date').textContent = dateStr;
+  </script>
+</body>
+</html>

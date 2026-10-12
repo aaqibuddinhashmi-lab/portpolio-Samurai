@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FarmAI — Weather</title>
+  <style>
+    /* Reuse base styles from index.html */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fafaf9; --surface: #ffffff; --border: #e7e5e4; --foreground: #1c1917;
+      --muted: #78716c; --secondary-bg: #f5f5f4; --primary: #16a34a; --radius: 12px;
+      --info: #0284c7; --info-light: rgba(2,132,199,0.1);
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--foreground); line-height: 1.6; }
+    
+    /* Sidebar */
+    .sidebar { display: none; position: fixed; left: 0; top: 0; width: 256px; height: 100vh; background: var(--surface); border-right: 1px solid var(--border); flex-direction: column; z-index: 50; }
+    @media (min-width: 769px) { .sidebar { display: flex; } }
+    .sidebar-logo { padding: 24px; display: flex; align-items: center; gap: 12px; }
+    .logo-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 16px; }
+    .sidebar-logo span { font-weight: 700; font-size: 20px; }
+    .sidebar-nav { flex: 1; padding: 0 16px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; margin-bottom: 2px; }
+    .sidebar-nav a:hover { background: var(--secondary-bg); color: var(--foreground); }
+    .sidebar-nav a.active { background: var(--surface); border: 1px solid var(--border); color: var(--foreground); font-weight: 600; }
+    .sidebar-nav a svg { width: 20px; height: 20px; }
+    
+    /* Bottom Nav */
+    .bottom-nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; height: 64px; background: var(--surface); border-top: 1px solid var(--border); z-index: 50; justify-content: space-around; align-items: center; }
+    @media (min-width: 769px) { .bottom-nav { display: none; } }
+    .bottom-nav a { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: var(--muted); }
+    .bottom-nav a.active { color: var(--primary); }
+    .bottom-nav a svg { width: 24px; height: 24px; }
+    .bottom-nav a span { font-size: 10px; font-weight: 500; }
+    
+    .main { padding: 32px 16px 96px; max-width: 960px; margin: 0 auto; width: 100%; }
+    @media (min-width: 769px) { .main { margin-left: 256px; padding: 48px 32px; width: auto; } }
+
+    /* Weather specific styles */
+    .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+    .header p { color: var(--muted); margin-bottom: 32px; }
+    
+    .weather-hero { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; padding: 48px; border-radius: 24px; display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 32px; box-shadow: 0 10px 25px rgba(2,132,199,0.3); }
+    .weather-hero h2 { font-size: 72px; font-weight: 700; line-height: 1; margin: 16px 0; }
+    .weather-hero p { font-size: 20px; font-weight: 500; opacity: 0.9; }
+    
+    .forecast-grid {
+      display: flex;
+      overflow-x: auto;
+      gap: 16px;
+      padding-bottom: 12px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+    }
+    @media (min-width: 769px) {
+      .forecast-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        overflow-x: visible;
+        padding-bottom: 0;
+      }
+    }
+    .forecast-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px 16px;
+      border-radius: 16px;
+      text-align: center;
+      flex: 0 0 130px;
+    }
+    @media (min-width: 769px) {
+      .forecast-card {
+        flex: initial;
+      }
+    }
+    .forecast-card p { font-weight: 600; margin-bottom: 12px; }
+    .forecast-card svg { width: 32px; height: 32px; color: var(--info); margin: 0 auto 12px; }
+    .forecast-card .temp { font-size: 20px; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">🌱</div><span>FarmAI</span></div>
+    <nav class="sidebar-nav">
+      <a href="index.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Home</a>
+      <a href="disease.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg> Disease Scan</a>
+      <a href="#" class="active"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg> Weather</a>
+      <a href="assistant.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> AI Assistant</a>
+    </nav>
+  </aside>
+
+  <nav class="bottom-nav">
+    <a href="index.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Home</span></a>
+    <a href="disease.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg><span>Scan</span></a>
+    <a href="#" class="active"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg><span>Weather</span></a>
+    <a href="assistant.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span>Assistant</span></a>
+  </nav>
+
+  <main class="main">
+    <div class="header">
+      <h1>Weather Forecast</h1>
+      <p>Hyper-local weather for Ranchi, Jharkhand</p>
+    </div>
+
+    <div class="weather-hero">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>
+      <h2>32°C</h2>
+      <p>Partly Cloudy</p>
+      <div style="margin-top: 16px; background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 99px; font-size: 14px;">
+        💡 Good conditions for spraying fertilizer today.
+      </div>
+    </div>
+
+    <h3 style="margin-bottom: 16px;">5-Day Forecast</h3>
+    <div class="forecast-grid">
+      <div class="forecast-card">
+        <p>Tomorrow</p>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-1.8A7 7 0 1 0 4 14.9"/><path d="M12 12v9"/><path d="m8 17 4 4 4-4"/></svg>
+        <div class="temp">28°</div>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">Rain (60%)</div>
+      </div>
+      <div class="forecast-card">
+        <p>Wed</p>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-1.8A7 7 0 1 0 4 14.9"/><path d="M12 12v9"/><path d="m8 17 4 4 4-4"/></svg>
+        <div class="temp">27°</div>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">Rain (80%)</div>
+      </div>
+      <div class="forecast-card">
+        <p>Thu</p>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+        <div class="temp">30°</div>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">Cloudy</div>
+      </div>
+      <div class="forecast-card">
+        <p>Fri</p>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        <div class="temp">33°</div>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">Sunny</div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

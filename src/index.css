@@ -2,6 +2,14 @@
    PORTFOLIO - PREMIUM BLACK & WHITE THEME
    ======================================== */
 
+@font-face {
+  font-family: 'Single Fighter';
+  src: url('/fonts/SingleFighter.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* CSS Reset & Base */
 *,
 *::before,
@@ -12,17 +20,22 @@
 }
 
 :root {
-  /* Color Palette */
-  --bg-black: #0B0B0B;
+  /* Color Palette — Samurai Theme */
+  --bg-black: #000000;
   --pure-white: #FFFFFF;
-  --soft-gray: #BDBDBD;
-  --border-line: rgba(255, 255, 255, 0.12);
-  --hover-glow: #EDEDED;
-  --neon-accent: #7DF9FF;
+  --soft-gray: #b0a090;
+  --border-line: rgba(255, 200, 150, 0.12);
+  --hover-glow: #f0e6d6;
+  --neon-accent: #c0392b;
+  --accent-gold: #d4a853;
+  --accent-warm: #e8c4a0;
 
   /* Typography */
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  --font-display: 'Shippori Mincho', serif;
+  --font-body: 'Sawarabi Mincho', serif;
+  --font-ui: 'Cinzel', serif;
+  --font-nautigal: 'Single Fighter', sans-serif;
+  --font-jp: 'Noto Sans JP', sans-serif;
 
   /* Spacing */
   --section-padding: clamp(80px, 12vh, 160px);
@@ -57,7 +70,7 @@ body {
 
 /* Selection */
 ::selection {
-  background: var(--neon-accent);
+  background: var(--accent-gold);
   color: var(--bg-black);
 }
 
@@ -87,21 +100,21 @@ h4,
 h5,
 h6 {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight:  800;
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
 
 .display-xl {
   font-size: clamp(2.5rem, 7vw, 5.5rem);
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 0.95;
 }
 
 .display-lg {
   font-size: clamp(2.5rem, 6vw, 5rem);
-  font-weight: 700;
+  font-weight:  800;
   letter-spacing: -0.03em;
 }
 
@@ -115,7 +128,7 @@ h6 {
   font-size: 0.875rem;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing:  0.4em;
   color: var(--soft-gray);
 }
 
@@ -134,7 +147,6 @@ h6 {
   width: var(--container-width);
   max-width: 1400px;
   margin: 0 auto;
-  overflow-x: hidden;
 }
 
 /* Section Base */
@@ -149,7 +161,7 @@ section {
   align-items: center;
   gap: 8px;
   padding: 16px 32px;
-  font-family: var(--font-display);
+  font-family: var(--font-ui);
   font-size: 0.9375rem;
   font-weight: 500;
   text-decoration: none;
@@ -168,18 +180,19 @@ section {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 40px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 40px rgba(212, 168, 83, 0.4);
 }
 
 .btn-secondary {
   background: transparent;
   color: var(--pure-white);
-  border: 1px solid var(--border-line);
+  border: 1px solid rgba(212, 168, 83, 0.4);
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: var(--pure-white);
+  background: rgba(212, 168, 83, 0.1);
+  border-color: rgba(212, 168, 83, 0.8);
+  box-shadow: 0 0 20px rgba(212, 168, 83, 0.4);
 }
 
 /* Magnetic Button Effect */
@@ -203,7 +216,7 @@ section {
   position: absolute;
   font-family: var(--font-display);
   font-size: clamp(8rem, 20vw, 20rem);
-  font-weight: 700;
+  font-weight: 800;
   -webkit-text-stroke: 1px var(--border-line);
   color: transparent;
   opacity: 0.3;
@@ -224,7 +237,7 @@ section {
   align-items: center;
   padding: 10px 20px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-line);
+  border: 1px solid rgba(212, 168, 83, 0.4);
   border-radius: 100px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -233,16 +246,16 @@ section {
 }
 
 .chip:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--pure-white);
-  box-shadow: 0 0 20px rgba(125, 249, 255, 0.2);
+  background: rgba(212, 168, 83, 0.1);
+  border-color: rgba(212, 168, 83, 0.8);
+  box-shadow: 0 0 20px rgba(212, 168, 83, 0.4);
 }
 
 /* Animation Classes */
 .fade-in {
   opacity: 0;
   transform: translateY(40px);
-  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fade-in.visible {
@@ -253,7 +266,7 @@ section {
 .fade-in-left {
   opacity: 0;
   transform: translateX(-40px);
-  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fade-in-left.visible {
@@ -264,7 +277,7 @@ section {
 .fade-in-right {
   opacity: 0;
   transform: translateX(40px);
-  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fade-in-right.visible {
@@ -316,7 +329,7 @@ section {
   border-radius: inherit;
   opacity: 0;
   transition: opacity var(--transition-medium);
-  box-shadow: 0 0 40px rgba(125, 249, 255, 0.3);
+  box-shadow: 0 0 40px rgba(212, 168, 83, 0.3);
   pointer-events: none;
 }
 
@@ -324,26 +337,42 @@ section {
   opacity: 1;
 }
 
-/* Project Card */
-.project-card {
-  position: relative;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border-line);
-  transition: all var(--transition-medium);
+/* Project Card — Samurai Invitation */
+
+
+/* Remove default dark backgrounds from project inner elements if they exist */
+
+.works .project-content {
+  background: transparent;
+}
+.works .project-image-wrapper {
+  background: transparent;
+}
+
+.works .project-content {
+  padding: 16px 0 0 0 !important;
+}
+
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 4px; left: 4px; right: 4px; bottom: 4px;
+  border: 1px solid rgba(212, 168, 83, 0.15);
+  pointer-events: none;
+  z-index: 10;
 }
 
 .project-card:hover {
-  transform: translateY(-10px) scale(1.02);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(212, 168, 83, 0.8);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 15px 30px rgba(212, 168, 83, 0.2);
 }
 
 .project-card img {
   width: 100%;
-  aspect-ratio: 16/10;
-  object-fit: cover;
+  height: auto; /* Fix for clipped images */
+  object-fit: contain;
   transition: transform var(--transition-medium);
 }
 
@@ -396,7 +425,7 @@ section {
   width: 400px;
   height: 400px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(125, 249, 255, 0.03) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(212, 168, 83, 0.03) 0%, transparent 70%);
   pointer-events: none;
   z-index: 2;
   transform: translate(-50%, -50%);
@@ -435,15 +464,200 @@ body:hover .cursor-ring {
 .cursor-dot {
   width: 8px;
   height: 8px;
-  background: #FFFFFF;
-  transition: width 0.2s ease, height 0.2s ease, opacity 0.3s ease;
-  box-shadow: 0 0 10px #FFFFFF, 0 0 20px rgba(255, 255, 255, 0.4);
+  background: var(--accent-gold);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 10px var(--accent-gold), 0 0 20px rgba(212, 168, 83, 0.4);
 }
 
 .cursor-ring {
   width: 36px;
   height: 36px;
-  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  border: 1.5px solid rgba(212, 168, 83, 0.5);
   background: transparent;
-  transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease, background-color 0.3s ease, opacity 0.3s ease;
+}
+
+/* Magnetic / Interactive state for Custom Cursor */
+body:has(a:hover, button:hover, .project-card:hover, .timeline-card:hover, .certificate-card:hover, .chip:hover) .cursor-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--neon-accent);
+  box-shadow: 0 0 15px var(--neon-accent), 0 0 30px var(--neon-accent);
+}
+
+body:has(a:hover, button:hover, .project-card:hover, .timeline-card:hover, .certificate-card:hover, .chip:hover) .cursor-ring {
+  width: 55px;
+  height: 55px;
+  border-color: var(--neon-accent);
+  background: rgba(192, 57, 43, 0.05); /* very subtle red tint */
+}
+
+
+
+
+.scroll-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.scroll-kanji {
+  font-family: var(--font-jp);
+  color: var(--neon-accent);
+  font-size: 2rem;
+  font-weight: 800;
+}
+.scroll-label {
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: #333; /* Dark text for parchment */
+  font-weight: 600;
+}
+.project-content .project-title {
+  color: #222; /* Dark text for parchment */
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+}
+.project-content .project-desc {
+  color: #444; /* Dark text for parchment */
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.project-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--neon-accent);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.cta-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--neon-accent);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 1.2rem;
+}
+
+.project-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(30, 22, 15, 0.95), rgba(45, 32, 20, 0.95));
+  border: 1px solid rgba(212, 168, 83, 0.4);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 4px 15px rgba(0, 0, 0, 0.4);
+  transition: all var(--transition-medium);
+}
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 4px; left: 4px; right: 4px; bottom: 4px;
+  border: 1px solid rgba(212, 168, 83, 0.15);
+  pointer-events: none;
+}
+
+
+
+
+
+.scroll-kanji {
+  font-family: var(--font-jp);
+  color: var(--neon-accent);
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+.scroll-label {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: #222;
+  font-weight: 800;
+}
+.works .project-title {
+  color: #111 !important;
+  font-size: 1.1rem !important;
+  margin-top: 16px !important;
+  margin-bottom: 8px !important;
+  font-weight: 800 !important;
+}
+.works .project-desc {
+  color: #333 !important;
+  font-size: 0.8rem !important;
+  line-height: 1.5 !important;
+  margin-bottom: 16px !important;
+}
+.works .project-image {
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+
+
+.works .project-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url('/images/scroll-asset.jpg') !important;
+  background-size: 100% 100% !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  mix-blend-mode: lighten; /* Only blend the background image */
+  z-index: 0;
+  display: block !important;
+  border: none !important;
+  pointer-events: none;
+}
+
+.works .project-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.works {
+  background-color: var(--bg-black) !important;
+}
+
+.project-card {
+  position: relative;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 0 !important;
+  display: block;
+}
+
+.project-card::before,
+.project-card::after {
+  display: none !important;
+}
+
+.project-image-full {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+  border-radius: 0; /* Just in case */
+}
+
+.project-card img.project-image-full {
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+  height: auto !important;
+  display: block;
+}
+
+.font-nautigal {
+  font-family: var(--font-nautigal) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.05em !important;
 }

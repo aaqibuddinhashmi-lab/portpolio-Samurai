@@ -7,71 +7,72 @@ import MagazineModal from './components/MagazineModal'
 import InvestEaseModal from './components/InvestEaseModal'
 import IITDelhiLMSModal from './components/IITDelhiLMSModal'
 import ConstructionModal from './components/ConstructionModal'
+import FarmiModal from './components/FarmiModal'
 
 
 // Project data
 const projects = [
   {
     id: 1,
-    label: 'EdTech Platform',
+    label: 'EDTECH',
     title: 'Govt LMS (IIT Delhi)',
-    description: 'Led end-to-end UX design for a 3-platform LMS ecosystem (Student, Faculty, Admin) at IIT Delhi under CSC e-Governance. Delivered full Information Architecture, scalable Design System, and high-fidelity prototypes serving Jharkhand University.',
-    image: '/images/project-lms.png',
+    description: 'A unified learning platform for students, faculty, and administrators.',
+    image: '/images/scrolls/lms.jpg',
     isIITDelhiLMS: true
   },
   {
     id: 2,
-    label: 'FinTech / Investment',
+    label: 'FINTECH',
     title: 'InvestEase',
-    description: 'Designed a comprehensive investment management app that consolidates bank accounts, investments, and financial goals into one beautiful dashboard. View the design presentation inside.',
-    image: '/images/project-investease.png',
+    description: 'An investment management app that brings all your finances together.',
+    image: '/images/scrolls/investease.jpg',
     isInvestEase: true
   },
   {
     id: 3,
-    label: 'AgriTech / AI',
+    label: 'AGRITECH ・ AI',
     title: 'FarmAI',
-    description: 'Built an intelligent AI farming companion featuring crop health monitoring, leaf disease detection, hyper-local weather insights, and smart alerts — with voice and multilingual support for rural accessibility.',
-    image: '/images/project-farmai.png',
-    link: 'http://localhost:3001'
+    description: 'An intelligent farming companion for healthier crops and stronger communities.',
+    image: '/images/scrolls/farmai.jpg',
+    isFarmAI: true
   },
   {
     id: 4,
     label: 'Magazine (New)',
     title: "THIS ISN'T HORROR",
     description: 'A visual exploration into the macabre through a crafted interactive magazine reflecting the inevitable crush of the corporate machine. Open the book to read.',
-    image: '/images/magazine/1-cover.png',
+    image: '/images/scrolls/magazine.jpg',
     isMagazine: true,
     isCreativity: true
   },
   {
     id: 5,
-    label: 'Game / Interactive',
+    label: 'Game ・ Interactive',
     title: "Flying Dragon",
     subtitle: 'An arcade-style game inspired by Flappy Bird, redesigned with a dragon concept and improved gameplay experience.',
     description: 'Navigate a fire-breathing dragon through procedurally generated obstacles. Features 3 dragon skins, dynamic sky themes, particle effects, and responsive touch/keyboard controls.',
-    image: '/images/project-flying-dragon.png',
+    image: '/images/scrolls/dragon.jpg',
     link: '/flying-dragon/index.html',
     isCreativity: true,
     isPlayable: true
   },
   {
     id: 6,
-    label: 'Management / Presentation',
+    label: 'MANAGEMENT',
     title: 'Construction Management',
-    description: 'A comprehensive project presentation focusing on construction management strategies, workflows, and operations.',
-    image: '/images/project-construction.png',
+    description: 'A complete project management solution for smarter construction operations.',
+    image: '/images/scrolls/construction.jpg',
     isConstruction: true
   }
 ]
 
 // Experience data
 const experiences = [
-  { date: 'Sep 2025–Present', title: 'Lovely Professional University', role: 'Assistant Professor', description: 'Guided research proposals, supported patent development, and improved design curriculum aligned with industry practices. Conducted Faculty Development Programs (FDPs) and coordinated NICHE International Conference. 🎓' },
-  { date: 'Nov 2024–Apr 2025', title: 'School of Specialised Excellence (DBSE)', role: 'UI/UX Designer (SRP)', description: 'Developed and delivered UI/UX curriculum integrating UX research, information architecture, and prototyping. Mentored students in UX Design, Interaction Design, and Design Thinking using Figma, Adobe Suite, and Miro. 🎒' },
-  { date: 'Apr 2024–Jul 2024', title: 'IIT Delhi', role: 'UI/UX Designer (SRP)', description: 'Designed and delivered UI/UX training curriculum covering research, interaction design, and prototyping. Received a Letter of Recommendation from Dr. Jyoti Kumar, HOD, Department of Design, IIT Delhi. ✨' },
-  { date: 'Oct 2023–Apr 2024', title: 'IIT Delhi', role: 'UI/UX Designer (Intern)', description: 'Contributed to the UX/UI design of a Learning Management System (LMS) for Jharkhand University under CSC Government Services Pvt. Ltd. Supported Digital Media & Design curriculum development, creating interactive learning content. 🏛️' },
-  { date: 'Jan 2022–Oct 2023', title: 'Ezy Foodz', role: 'UI/UX Designer', description: 'Led packaging and branding redesign, increasing brand recognition by 20%. Designed visual assets and UI concepts using Figma and Adobe Creative Suite. 🍔' }
+  { date: 'Sep 2025–Present', chapter: '05', title: 'Lovely Professional University', role: 'Assistant Professor', tags: ['Research', 'Mentorship', 'Curriculum'], description: 'Guided research proposals, supported patent development, and improved design curriculum aligned with industry practices. Conducted Faculty Development Programs (FDPs) and coordinated NICHE International Conference. 🎓' },
+  { date: 'Nov 2024–Apr 2025', chapter: '04', title: 'DBSE', role: 'UI/UX Designer (SRP)', tags: ['Interaction', 'UX Design', 'Teaching'], description: 'Developed and delivered UI/UX curriculum integrating UX research, information architecture, and prototyping. Mentored students in UX Design, Interaction Design, and Design Thinking using Figma, Adobe Suite, and Miro. 🎒' },
+  { date: 'Apr 2024–Jul 2024', chapter: '03', title: 'IIT Delhi', role: 'UI/UX Designer (SRP)', tags: ['Prototyping', 'Training', 'Research'], description: 'Designed and delivered UI/UX training curriculum covering research, interaction design, and prototyping. Received a Letter of Recommendation from Dr. Jyoti Kumar, HOD, Department of Design, IIT Delhi. ✨' },
+  { date: 'Oct 2023–Apr 2024', chapter: '02', title: 'IIT Delhi', role: 'UI/UX Designer (Intern)', tags: ['EdTech', 'LMS', 'Interactive'], description: 'Contributed to the UX/UI design of a Learning Management System (LMS) for Jharkhand University under CSC Government Services Pvt. Ltd. Supported Digital Media & Design curriculum development, creating interactive learning content. 🏛️' },
+  { date: 'Jan 2022–Oct 2023', chapter: '01', title: 'Ezy Foodz', role: 'UI/UX Designer', tags: ['Branding', 'Figma', 'Visuals'], description: 'Led packaging and branding redesign, increasing brand recognition by 20%. Designed visual assets and UI concepts using Figma and Adobe Creative Suite. 🍔' }
 ]
 
 // Skills data
@@ -129,6 +130,7 @@ function App() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeProcess, setActiveProcess] = useState(0)
+  const [activeSection, setActiveSection] = useState('hero')
   const [progressWidth, setProgressWidth] = useState(0)
   const [copied, setCopied] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -136,6 +138,9 @@ function App() {
   const [isInvestEaseOpen, setIsInvestEaseOpen] = useState(false)
   const [isIITDelhiLMSOpen, setIsIITDelhiLMSOpen] = useState(false)
   const [isConstructionOpen, setIsConstructionOpen] = useState(false)
+  const [isFarmAIOpen, setIsFarmAIOpen] = useState(false)
+  const [isMuted, setIsMuted] = useState(false)
+  const audioRef = useRef(null)
 
   const processRef = useRef(null)
   const cursorDotRef = useRef(null)
@@ -143,15 +148,40 @@ function App() {
   const cursorSpotRef = useRef(null)
 
   // Toggle modal-open class on body to hide custom cursor over modals
+  
+  // Handle audio autoplay
   useEffect(() => {
-    const anyModalOpen = isModalOpen || isMagazineOpen || isInvestEaseOpen || isIITDelhiLMSOpen || isConstructionOpen
+    const audio = audioRef.current;
+    if (audio) {
+      audio.play().catch(() => {
+        console.log("Audio autoplay blocked by browser");
+      });
+    }
+  }, [])
+
+  useEffect(() => {
+    const anyModalOpen = isModalOpen || isMagazineOpen || isInvestEaseOpen || isIITDelhiLMSOpen || isConstructionOpen || isFarmAIOpen
     document.body.classList.toggle('modal-open', anyModalOpen)
-  }, [isModalOpen, isMagazineOpen, isInvestEaseOpen, isIITDelhiLMSOpen, isConstructionOpen])
+  }, [isModalOpen, isMagazineOpen, isInvestEaseOpen, isIITDelhiLMSOpen, isConstructionOpen, isFarmAIOpen])
 
   // Scroll effects
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50)
+
+      // Track active section for side nav
+      const sections = ['hero', 'work', 'about', 'experience', 'contact']
+      let current = 'hero'
+      for (const id of sections) {
+        const el = document.getElementById(id)
+        if (el) {
+          const rect = el.getBoundingClientRect()
+          if (rect.top <= window.innerHeight / 3) {
+            current = id
+          }
+        }
+      }
+      setActiveSection(current)
 
       // Process section animation
       if (processRef.current) {
@@ -200,8 +230,8 @@ function App() {
 
     const lerp = (a, b, t) => a + (b - a) * t
     const animateRing = () => {
-      ringX = lerp(ringX, mouseX, 0.12)
-      ringY = lerp(ringY, mouseY, 0.12)
+      ringX = lerp(ringX, mouseX, 0.4)
+      ringY = lerp(ringY, mouseY, 0.4)
       if (cursorRingRef.current) {
         cursorRingRef.current.style.left = ringX + 'px'
         cursorRingRef.current.style.top = ringY + 'px'
@@ -224,14 +254,14 @@ function App() {
       <div ref={cursorDotRef} className="cursor-dot" />
       <div ref={cursorRingRef} className="cursor-ring" />
 
-      {/* Navigation */}
+      {/* Navigation — Minimal Top Bar */}
       <nav className={`nav ${scrolled ? 'scrolled' : ''}`}>
         <div className="container nav-container">
           <Logo />
           <ul className={`nav-links ${mobileMenuOpen ? 'open' : ''}`}>
+            <li><a href="#hero" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Home</a></li>
             <li><a href="#work" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Work</a></li>
             <li><a href="#creativity" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Creativity</a></li>
-            <li><a href="#process" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Process</a></li>
             <li><a href="#about" className="nav-link" onClick={() => setMobileMenuOpen(false)}>About</a></li>
             <li><a href="#experience" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Experience</a></li>
             <li><a href="#contact" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Contact</a></li>
@@ -244,107 +274,174 @@ function App() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="hero" id="hero">
-        <div className="hero-bg-grid" />
-        <div className="hero-content">
-          <div className="hero-badge fade-in">
-            <span className="hero-badge-dot" />
-            Available for freelance work
-          </div>
-          <h1 className="display-xl hero-title fade-in delay-1">
-            I design interfaces<br />
-            <span className="text-outline">that feel effortless.</span>
-          </h1>
-          <p className="hero-subtitle fade-in delay-2">
-            UI/UX Designer crafting clean, accessible and product-ready experiences.
-          </p>
-          <div className="hero-buttons fade-in delay-3">
-            <a href="#work" className="btn btn-primary btn-magnetic">
-              Explore Work <span>↓</span>
-            </a>
-            <a
-              href="./Aaqib_Uddin_Hashmi_CV.pdf"
-              download="Aaqib_Uddin_Hashmi_CV.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-secondary btn-magnetic"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:'4px'}}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Download Resume
-            </a>
-          </div>
+      {/* Right-Side Navigation Panel (Desktop) */}
+      <aside className="side-nav">
+        <div className="side-nav-vertical-text">デザインはより良い未来のために</div>
 
-          <div className="hero-stats fade-in delay-4">
-            <div className="hero-stat">
-              <span className="hero-stat-number">4+</span>
-              <span className="hero-stat-label">Years Experience</span>
+        <div className="side-nav-items">
+          <a href="#hero" className={`side-nav-item ${activeSection === 'hero' ? 'active' : ''}`}>
+            <span className="side-nav-icon">⛩</span>
+            <div className="side-nav-text">
+              <span className="side-nav-label">HOME</span>
+              <span className="side-nav-jp">ホーム</span>
             </div>
-            <div className="hero-stat-divider" />
-            <div className="hero-stat">
-              <span className="hero-stat-number">15+</span>
-              <span className="hero-stat-label">Projects Shipped</span>
+          </a>
+          <a href="#work" className={`side-nav-item ${activeSection === 'work' ? 'active' : ''}`}>
+            <span className="side-nav-icon">📜</span>
+            <div className="side-nav-text">
+              <span className="side-nav-label">WORK</span>
+              <span className="side-nav-jp">仕事</span>
             </div>
-            <div className="hero-stat-divider" />
-            <div className="hero-stat">
-              <span className="hero-stat-number">3</span>
-              <span className="hero-stat-label">Institutions Trained</span>
+          </a>
+          <a href="#about" className={`side-nav-item ${activeSection === 'about' ? 'active' : ''}`}>
+            <span className="side-nav-icon">🧘</span>
+            <div className="side-nav-text">
+              <span className="side-nav-label">ABOUT</span>
+              <span className="side-nav-jp">私について</span>
             </div>
-          </div>
-
-          <a href="#work" className="scroll-indicator fade-in delay-5">
-            <div className="scroll-indicator-mouse">
-              <div className="scroll-indicator-wheel"></div>
+          </a>
+          <a href="#experience" className={`side-nav-item ${activeSection === 'experience' ? 'active' : ''}`}>
+            <span className="side-nav-icon">📖</span>
+            <div className="side-nav-text">
+              <span className="side-nav-label">EXPERIENCE</span>
+              <span className="side-nav-jp">経歴</span>
             </div>
-            <span className="scroll-indicator-text">Scroll</span>
+          </a>
+          <a href="#contact" className={`side-nav-item ${activeSection === 'contact' ? 'active' : ''}`}>
+            <span className="side-nav-icon">✉️</span>
+            <div className="side-nav-text">
+              <span className="side-nav-label">CONTACT</span>
+              <span className="side-nav-jp">連絡</span>
+            </div>
           </a>
         </div>
+
+        <div className="side-nav-social">
+          <span className="side-nav-social-label">LET'S CONNECT</span>
+          <div className="side-nav-social-icons">
+            <a href="https://www.linkedin.com/in/aaqib-uddin-hashmi/" target="_blank" rel="noopener noreferrer" title="LinkedIn">in</a>
+            <a href="https://www.behance.net/aaqibuddin" target="_blank" rel="noopener noreferrer" title="Behance">Be</a>
+            <a href="mailto:aaqibuddinhashmi@gmail.com" title="Email">✉</a>
+          </div>
+        </div>
+      </aside>
+
+      {/* Hero Section — Samurai Parallax Scene */}
+      <section className="hero" id="hero">
+        {/* Layer 1: Background video (Always purely visual, strictly muted so it NEVER stops playing) */}
+        <video 
+          className="hero-bg-video" 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+        >
+          <source src="/videos/hero_bg_with_sound.mp4" type="video/mp4" />
+        </video>
+
+        {/* Hidden Audio Element for Background Sound */}
+        <audio 
+          ref={audioRef} 
+          src="/videos/hero_bg_with_sound.mp4" 
+          loop 
+          muted={isMuted} 
+        />
+
+        <button 
+          className="sound-toggle"
+          onClick={(e) => {
+            e.stopPropagation();
+            const audio = audioRef.current
+            if (audio) {
+              const nextMuted = !audio.muted;
+              audio.muted = nextMuted;
+              setIsMuted(nextMuted);
+              
+              // If it's being unmuted, make sure it's actually playing 
+              // (since browser might have paused the initial autoplay attempt)
+              if (!nextMuted) {
+                audio.play().catch(() => {});
+              }
+            }
+          }}
+        >
+          {isMuted ? '🔇' : '🔊'}
+        </button>
+
+        {/* Layer 2: Atmospheric mist & gradient overlays */}
+        <div className="hero-mist" />
+
+        {/* Layer 3: Moon glow pulse */}
+        <div className="hero-moon-glow" />
+
+        {/* Layer 4: Cherry blossom petals */}
+        <div className="hero-petals">
+          {[...Array(15)].map((_, i) => (
+            <div key={i} className={`petal petal-${i}`} />
+          ))}
+        </div>
+
+        {/* Floating kanji — 夢 (Dream) */}
+        <span className="hero-kanji-dream">夢</span>
+
+        {/* Floating kanji accents */}
+        <span className="hero-kanji-float hero-kanji-creation">創造</span>
+        <span className="hero-kanji-float hero-kanji-balance">バランス</span>
+
+        {/* Origami crane */}
+        <svg className="hero-origami" width="50" height="40" viewBox="0 0 50 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M25 0L50 30L40 28L25 40L10 28L0 30L25 0Z" fill="rgba(255,255,255,0.5)" />
+          <path d="M25 0L25 40" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+        </svg>
+
+        {/* Hero Content — Left aligned */}
+        <div className="hero-content">
+          <h1 className="display-xl hero-title font-nautigal">
+            Designing<br />for a more<br />human tomorrow.
+          </h1>
+          <p className="hero-jp-subtitle">
+            より人間らしい<br />明日をデザインする。
+          </p>
+          <div className="hero-hanko">覚</div>
+          <div className="hero-credentials">
+            <p><strong>Product Experience Designer</strong></p>
+            <p>Based in India.</p>
+            <p>Exploring ideas at the intersection</p>
+            <p>of people, products and impact.</p>
+          </div>
+        </div>
+
+        {/* Scroll prompt — bottom left */}
+        <a href="#work" className="hero-scroll-prompt">
+          <span className="scroll-line"></span>
+          <span>SCROLL TO BEGIN</span>
+        </a>
       </section>
 
       {/* Selected Work Section */}
       <section className="works" id="work">
         <div className="container">
           <div className="section-header fade-in" style={{ textAlign: 'center' }}>
-            <span className="section-label">Selected Work</span>
-            <h2 className="display-lg">Featured Projects</h2>
-            <p className="section-subtitle fade-in delay-1">A curated selection spanning EdTech, FinTech, and beyond.</p>
+            <span className="section-label">CHAPTER 01 ・ THE MISSIONS</span>
+            <h2 className="display-lg font-nautigal">Featured Projects</h2>
           </div>
 
           <div className="projects-grid">
             {projects.filter(p => !p.isCreativity).map((project, index) => (
               <article
                 key={project.id}
-                className={`project-card glow scale-in delay-${index + 1}`}
+                className={`project-card scale-in delay-${index + 1}`}
                 onClick={() => {
                   if (project.isMagazine) setIsMagazineOpen(true)
                   if (project.isInvestEase) setIsInvestEaseOpen(true)
                   if (project.isIITDelhiLMS) setIsIITDelhiLMSOpen(true)
                   if (project.isConstruction) setIsConstructionOpen(true)
-                  if (project.link) window.open(project.link, '_blank')
+                  if (project.isFarmAI) setIsFarmAIOpen(true)
+                  if (project.link && !project.isMagazine && !project.isInvestEase && !project.isIITDelhiLMS && !project.isConstruction && !project.isFarmAI) window.open(project.link, '_blank')
                 }}
-                style={(project.isMagazine || project.isInvestEase || project.isIITDelhiLMS || project.isConstruction || project.link) ? { cursor: 'pointer' } : {}}
+                style={(project.isMagazine || project.isInvestEase || project.isIITDelhiLMS || project.isConstruction || project.isFarmAI || project.link) ? { cursor: 'pointer' } : {}}
               >
-                <div className={`project-image-wrapper ${project.isMagazine ? 'project-image-wrapper--magazine' : ''}`}>
-                  <span className="project-index">0{project.id}</span>
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="project-image"
-                  />
-                  {(project.isMagazine || project.isInvestEase || project.isIITDelhiLMS || project.isConstruction || project.link) && (
-                    <div className="magazine-overlay-hint">
-                      <span>{project.isMagazine ? 'Click to Read' : 'Click to View'}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="project-content">
-                  <span className="project-label">{project.label}</span>
-                  <h3 className="project-title">{project.title}</h3>
-                  <p className="project-desc">{project.description}</p>
-                  {(project.isMagazine || project.isInvestEase || project.isIITDelhiLMS || project.isConstruction || project.link) && (
-                    <span className="project-cta">View Case Study →</span>
-                  )}
-                </div>
+                <img src={project.image} alt={project.title} className="project-image-full" />
               </article>
             ))}
           </div>
@@ -355,16 +452,15 @@ function App() {
       <section className="creativity" id="creativity">
         <div className="container">
           <div className="section-header fade-in" style={{ textAlign: 'center' }}>
-            <span className="section-label">Beyond Interfaces</span>
-            <h2 className="display-lg">Creative Exploration</h2>
-            <p className="section-subtitle fade-in delay-1">Experiments in visual storytelling and interactive media.</p>
+            <span className="section-label">CHAPTER 02 ・ EXPLORATION</span>
+            <h2 className="display-lg font-nautigal">Creative Exploration</h2>
           </div>
 
           <div className="projects-grid">
             {projects.filter(p => p.isCreativity).map((project, index) => (
               <article
                 key={project.id}
-                className={`project-card glow scale-in delay-${index + 1} ${project.isPlayable ? 'project-card--playable' : ''}`}
+                className={`project-card scale-in delay-${index + 1} ${project.isPlayable ? 'project-card--playable' : ''}`}
                 onClick={() => {
                   if (project.isMagazine) setIsMagazineOpen(true)
                   else if (project.link) window.open(project.link, '_blank', 'noopener,noreferrer')
@@ -374,33 +470,7 @@ function App() {
                 role="link"
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (project.isMagazine) setIsMagazineOpen(true); else if (project.link) window.open(project.link, '_blank', 'noopener,noreferrer'); } }}
               >
-                <div className={`project-image-wrapper ${project.isMagazine ? 'project-image-wrapper--magazine' : ''}`}>
-                  <span className="project-index">0{project.id}</span>
-                  {project.isPlayable && (
-                    <span className="project-tag-live">🎮 Playable Demo</span>
-                  )}
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="project-image"
-                  />
-                  <div className="magazine-overlay-hint">
-                    <span>{project.isMagazine ? 'Click to Read' : project.isPlayable ? '▶ Play Now' : 'View Project'}</span>
-                  </div>
-                </div>
-                <div className="project-content">
-                  <span className="project-label">{project.label}</span>
-                  <h3 className="project-title">{project.title}</h3>
-                  {project.subtitle && <p className="project-subtitle">{project.subtitle}</p>}
-                  <p className="project-desc">{project.description}</p>
-                  {project.isPlayable ? (
-                    <span className="project-cta project-cta--play">
-                      Play Live Game <span className="cta-external-icon">↗</span>
-                    </span>
-                  ) : (
-                    <span className="project-cta">{project.isMagazine ? 'Read Magazine →' : 'View Project →'}</span>
-                  )}
-                </div>
+                <img src={project.image} alt={project.title} className="project-image-full" />
               </article>
             ))}
           </div>
@@ -411,11 +481,8 @@ function App() {
       <section className="process" id="process" ref={processRef}>
         <div className="container">
           <div className="section-header fade-in" style={{ textAlign: 'center' }}>
-            <span className="section-label">The Secret Sauce</span>
-            <h2 className="display-lg">How the Magic Happens ✨</h2>
-            <p className="body-lg" style={{ maxWidth: '600px', margin: '20px auto 0' }}>
-              Spoiler: It's not actually magic. Just lots of coffee and user interviews.
-            </p>
+            <span className="section-label">CHAPTER 03 ・ THE STRATEGY</span>
+            <h2 className="display-lg font-nautigal">How the Magic Happens ✨</h2>
           </div>
 
           <div className="process-words">
@@ -443,7 +510,7 @@ function App() {
               <span className="section-label">About Me</span>
               <h2 className="display-md" style={{ marginTop: '16px', marginBottom: '24px' }}>Aaqib Uddin Hashmi</h2>
               <p className="body-lg" style={{ marginBottom: '16px' }}>
-                <strong>Product Designer · UX Researcher · Design Educator</strong>
+                <strong>Product Designer ・ UX Researcher ・ Design Educator</strong>
               </p>
               <p style={{ color: 'var(--soft-gray)', lineHeight: 1.8, marginBottom: '14px' }}>
                 Curious about how people think, behave, and interact with products. That curiosity evolved into a career in UX design and research.
@@ -470,9 +537,20 @@ function App() {
           </div>
 
           <div className="about-keywords fade-in delay-2">
-            <span className="keyword-outline">ACCESSIBILITY</span>
-            <span className="keyword-outline">SYSTEMS</span>
-            <span className="keyword-outline">INTERACTION</span>
+            <div className="marquee-container">
+              <div className="marquee-track">
+                <div className="marquee-content">
+                  <span className="keyword-outline">ACCESSIBILITY</span>
+                  <span className="keyword-outline">SYSTEMS</span>
+                  <span className="keyword-outline">INTERACTION</span>
+                </div>
+                <div className="marquee-content" aria-hidden="true">
+                  <span className="keyword-outline">ACCESSIBILITY</span>
+                  <span className="keyword-outline">SYSTEMS</span>
+                  <span className="keyword-outline">INTERACTION</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -481,8 +559,8 @@ function App() {
       <section className="experience" id="experience">
         <div className="container">
           <div className="section-header fade-in" style={{ textAlign: 'center' }}>
-            <span className="section-label">Experience</span>
-            <h2 className="display-lg">My Journey</h2>
+            <span className="section-label">CHAPTER 04 ・ THE PATH</span>
+            <h2 className="display-lg font-nautigal">My Journey</h2>
           </div>
         </div>
 
@@ -492,22 +570,30 @@ function App() {
               const yearMatch = exp.date.match(/\d{4}/);
               const year = yearMatch ? yearMatch[0] : '2024';
               
-              let badgeClass = 'badge-outline';
-              if (index === 0) badgeClass = 'badge-gradient-cyan';
-              else if (index === 1) badgeClass = 'badge-solid-blue';
-              else if (index === 2) badgeClass = 'badge-gradient-green';
-              else if (index === 3) badgeClass = 'badge-solid-purple';
-              else if (index === 4) badgeClass = 'badge-gradient-orange';
+              let badgeClass = 'badge-gradient-orange';
 
               return (
-                <div key={index} className="timeline-item">
-                  <div className={`timeline-badge ${badgeClass}`}>{year}</div>
-                  <div className={`timeline-card ${index % 2 === 1 ? 'card-highlight' : ''}`}>
-                    <h3>{exp.title} — {exp.role}</h3>
-                    <p>{exp.description}</p>
-                  </div>
-                  <div className="timeline-connector"></div>
-                  <div className="timeline-node"></div>
+                <div key={index} className="timeline-item" style={{ minWidth: '320px' }}>
+                  <article className={`timeline-card fade-in delay-${index + 1}`} style={{ backgroundImage: `url('/images/card_bg_${index + 1}.jpg')` }}>
+                    <div className="timeline-badge-container">
+                      <div className="diamond-left"></div>
+                      <div className="timeline-badge-content">
+                        {year}
+                      </div>
+                      <div className="diamond-right"></div>
+                    </div>
+                    
+                    <div className="timeline-content">
+                      <h3 className="card-title">
+                        {exp.title} — {exp.role}
+                      </h3>
+                      <p className="card-desc">{exp.description}</p>
+                    </div>
+                    
+                    <div className="timeline-bottom-ornament">
+                      <img src="/images/tassel_knot.png" alt="Ornament" />
+                    </div>
+                  </article>
                 </div>
               );
             })}
@@ -525,8 +611,8 @@ function App() {
       <section className="skills" id="skills">
         <div className="container">
           <div className="section-header fade-in" style={{ textAlign: 'center' }}>
-            <span className="section-label">Expertise</span>
-            <h2 className="display-lg">Skills &amp; Tools</h2>
+            <span className="section-label">CHAPTER 05 ・ THE ARSENAL</span>
+            <h2 className="display-lg font-nautigal">Skills ・ Tools</h2>
           </div>
 
           <div className="skills-category fade-in delay-1">
@@ -556,8 +642,8 @@ function App() {
       <section className="certificates" id="certificates">
         <div className="container">
           <div className="section-header fade-in" style={{ textAlign: 'center' }}>
-            <span className="section-label">Credentials</span>
-            <h2 className="display-lg">Certificates</h2>
+            <span className="section-label">CHAPTER 06 ・ THE ACHIEVEMENTS</span>
+            <h2 className="display-lg font-nautigal">Certificates</h2>
           </div>
 
           <div className="certificates-grid">
@@ -578,11 +664,14 @@ function App() {
       <section className="contact" id="contact">
         <div className="container">
           <div className="fade-in">
-            <span className="section-label">Get In Touch</span>
+            <span className="section-label">CHAPTER 07 ・ THE NEXT CHAPTER</span>
             <h2 className="display-lg contact-title">
               Let's design something<br />
               <span className="text-outline">people love using.</span>
             </h2>
+            <div className="contact-journey-text">
+              THE JOURNEY ENDS HERE.<br/>THE NEXT ONE STARTS WITH A CONVERSATION.
+            </div>
             <p className="contact-subtitle">
               Ready to bring your product vision to life? Let's collaborate and create
               exceptional user experiences together.
@@ -614,11 +703,7 @@ function App() {
       <footer className="footer">
         <div className="container footer-inner">
           <p>© {new Date().getFullYear()} Aaqib Uddin Hashmi. Designed with passion.</p>
-          <div className="footer-links">
-            <a href="https://www.linkedin.com/in/aaqib-uddin-hashmi/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href="https://www.behance.net/aaqibuddin" target="_blank" rel="noopener noreferrer">Behance</a>
-            <a href="mailto:aaqibuddinhashmi@gmail.com">Email</a>
-          </div>
+
         </div>
       </footer>
 
@@ -627,6 +712,7 @@ function App() {
       <InvestEaseModal isOpen={isInvestEaseOpen} onClose={() => setIsInvestEaseOpen(false)} />
       <IITDelhiLMSModal isOpen={isIITDelhiLMSOpen} onClose={() => setIsIITDelhiLMSOpen(false)} />
       <ConstructionModal isOpen={isConstructionOpen} onClose={() => setIsConstructionOpen(false)} />
+      <FarmiModal isOpen={isFarmAIOpen} onClose={() => setIsFarmAIOpen(false)} />
 
       {/* Copy Feedback Toast */}
       <div className={`copy-feedback ${copied ? 'show' : ''}`}>

@@ -24,7 +24,7 @@
 .modal-content {
     background: #000000;
     border: 1px solid var(--border-line);
-    box-shadow: 0 0 50px rgba(125, 249, 255, 0.1);
+    box-shadow: 0 0 50px rgba(212, 168, 83, 0.1);
     border-radius: var(--radius-lg);
     width: 100%;
     max-width: 500px;
@@ -100,7 +100,7 @@
     outline: none;
     border-color: var(--neon-accent);
     background: rgba(255, 255, 255, 0.05);
-    box-shadow: 0 0 15px rgba(125, 249, 255, 0.1);
+    box-shadow: 0 0 15px rgba(212, 168, 83, 0.1);
 }
 
 textarea.form-control {

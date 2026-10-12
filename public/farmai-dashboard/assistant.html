@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FarmAI — AI Assistant</title>
+  <style>
+    /* Reuse base styles from index.html */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fafaf9; --surface: #ffffff; --border: #e7e5e4; --foreground: #1c1917;
+      --muted: #78716c; --secondary-bg: #f5f5f4; --primary: #16a34a; --radius: 12px;
+      --accent: #7c3aed; --accent-light: rgba(124,58,237,0.1);
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--foreground); line-height: 1.6; }
+    
+    /* Sidebar */
+    .sidebar { display: none; position: fixed; left: 0; top: 0; width: 256px; height: 100vh; background: var(--surface); border-right: 1px solid var(--border); flex-direction: column; z-index: 50; }
+    @media (min-width: 769px) { .sidebar { display: flex; } }
+    .sidebar-logo { padding: 24px; display: flex; align-items: center; gap: 12px; }
+    .logo-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 16px; }
+    .sidebar-logo span { font-weight: 700; font-size: 20px; }
+    .sidebar-nav { flex: 1; padding: 0 16px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; margin-bottom: 2px; }
+    .sidebar-nav a:hover { background: var(--secondary-bg); color: var(--foreground); }
+    .sidebar-nav a.active { background: var(--surface); border: 1px solid var(--border); color: var(--foreground); font-weight: 600; }
+    .sidebar-nav a svg { width: 20px; height: 20px; }
+    
+    /* Bottom Nav */
+    .bottom-nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; height: 64px; background: var(--surface); border-top: 1px solid var(--border); z-index: 50; justify-content: space-around; align-items: center; }
+    @media (min-width: 769px) { .bottom-nav { display: none; } }
+    .bottom-nav a { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: var(--muted); }
+    .bottom-nav a.active { color: var(--primary); }
+    .bottom-nav a svg { width: 24px; height: 24px; }
+    .bottom-nav a span { font-size: 10px; font-weight: 500; }
+    
+    .main { padding: 32px 16px 96px; max-width: 960px; margin: 0 auto; width: 100%; height: 100vh; display: flex; flex-direction: column; }
+    @media (min-width: 769px) { .main { margin-left: 256px; padding: 48px 32px; width: auto; } }
+
+    /* Chat specific styles */
+    .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+    .header p { color: var(--muted); margin-bottom: 24px; }
+    
+    .chat-container { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; overflow: hidden; }
+    .chat-messages { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; background: #f9fafb; }
+    
+    .msg { display: flex; gap: 12px; max-width: 80%; }
+    .msg.bot { align-self: flex-start; }
+    .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .msg.bot .avatar { background: var(--accent-light); color: var(--accent); }
+    .msg.user .avatar { background: var(--primary); color: white; }
+    .bubble { padding: 12px 16px; border-radius: 16px; font-size: 14px; }
+    .msg.bot .bubble { background: var(--surface); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+    .msg.user .bubble { background: var(--primary); color: white; border-bottom-right-radius: 4px; }
+    
+    .chat-input { padding: 16px; border-top: 1px solid var(--border); background: var(--surface); display: flex; gap: 12px; align-items: center; }
+    .chat-input input { flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 99px; outline: none; font-size: 14px; }
+    .chat-input input:focus { border-color: var(--accent); }
+    .send-btn { width: 44px; height: 44px; border-radius: 50%; background: var(--accent); color: white; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .mic-btn { width: 44px; height: 44px; border-radius: 50%; background: var(--secondary-bg); color: var(--foreground); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">🌱</div><span>FarmAI</span></div>
+    <nav class="sidebar-nav">
+      <a href="index.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Home</a>
+      <a href="disease.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg> Disease Scan</a>
+      <a href="weather.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg> Weather</a>
+      <a href="#" class="active"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> AI Assistant</a>
+    </nav>
+  </aside>
+
+  <nav class="bottom-nav">
+    <a href="index.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Home</span></a>
+    <a href="disease.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg><span>Scan</span></a>
+    <a href="weather.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg><span>Weather</span></a>
+    <a href="#" class="active"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span>Assistant</span></a>
+  </nav>
+
+  <main class="main">
+    <div class="header" style="flex-shrink: 0;">
+      <h1 style="display:flex; align-items:center; gap:8px;">FarmAI Assistant <span style="font-size: 14px; background:var(--accent-light); color:var(--accent); padding:4px 8px; border-radius:99px; font-weight:600;">Beta</span></h1>
+      <p>Ask anything about your crops in your preferred language</p>
+    </div>
+
+    <div class="chat-container">
+      <div class="chat-messages">
+        <div class="msg bot">
+          <div class="avatar">🤖</div>
+          <div class="bubble">Namaste Ravi! How can I help you with your farm today? You can type or use the microphone to speak in Hindi or English.</div>
+        </div>
+        <div class="msg user">
+          <div class="avatar">👨‍🌾</div>
+          <div class="bubble">When is the best time to apply urea for my rice crop? It's currently in the vegetative stage (Day 45).</div>
+        </div>
+        <div class="msg bot">
+          <div class="avatar">🤖</div>
+          <div class="bubble">Since your rice crop is at Day 45 (late vegetative / early panicle initiation stage), this is a critical time for nitrogen. I recommend applying the second top dressing of Urea (around 20-25 kg per acre) within the next 3-4 days. <br><br><b>Note:</b> There is a 60% chance of rain tomorrow. It is best to apply urea when the field has mild moisture but avoid applying right before heavy rainfall to prevent runoff.</div>
+        </div>
+      </div>
+      <div class="chat-input" onclick="alert('This is a static UI preview. Chat functionality is disabled.')">
+        <button class="mic-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg></button>
+        <input type="text" placeholder="Type your farming question..." readonly />
+        <button class="send-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FarmAI — My Crops</title>
+  <style>
+    /* Reuse base styles from index.html */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fafaf9; --surface: #ffffff; --border: #e7e5e4; --foreground: #1c1917;
+      --muted: #78716c; --secondary-bg: #f5f5f4; --primary: #16a34a; --radius: 12px;
+      --success: #16a34a; --success-light: rgba(22,163,74,0.1);
+      --warning: #ca8a04; --warning-light: rgba(202,138,4,0.1);
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--foreground); line-height: 1.6; }
+    
+    /* Sidebar */
+    .sidebar { display: none; position: fixed; left: 0; top: 0; width: 256px; height: 100vh; background: var(--surface); border-right: 1px solid var(--border); flex-direction: column; z-index: 50; }
+    @media (min-width: 769px) { .sidebar { display: flex; } }
+    .sidebar-logo { padding: 24px; display: flex; align-items: center; gap: 12px; }
+    .logo-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 16px; }
+    .sidebar-logo span { font-weight: 700; font-size: 20px; }
+    .sidebar-nav { flex: 1; padding: 0 16px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; margin-bottom: 2px; }
+    .sidebar-nav a:hover { background: var(--secondary-bg); color: var(--foreground); }
+    .sidebar-nav a.active { background: var(--surface); border: 1px solid var(--border); color: var(--foreground); font-weight: 600; }
+    .sidebar-nav a svg { width: 20px; height: 20px; }
+    
+    /* Bottom Nav */
+    .bottom-nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; height: 64px; background: var(--surface); border-top: 1px solid var(--border); z-index: 50; justify-content: space-around; align-items: center; }
+    @media (min-width: 769px) { .bottom-nav { display: none; } }
+    .bottom-nav a { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: var(--muted); }
+    .bottom-nav a.active { color: var(--primary); }
+    .bottom-nav a svg { width: 24px; height: 24px; }
+    .bottom-nav a span { font-size: 10px; font-weight: 500; }
+    
+    .main { padding: 32px 16px 96px; max-width: 960px; margin: 0 auto; width: 100%; }
+    @media (min-width: 769px) { .main { margin-left: 256px; padding: 48px 32px; width: auto; } }
+
+    /* Crops specific styles */
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
+    .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+    .header p { color: var(--muted); }
+    .add-btn { background: var(--primary); color: white; padding: 10px 20px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 14px; }
+    
+    .crop-grid {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding-bottom: 12px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+    }
+    @media (min-width: 769px) {
+      .crop-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        overflow-x: visible;
+        padding-bottom: 0;
+      }
+    }
+    
+    .crop-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      flex: 0 0 280px;
+    }
+    @media (min-width: 769px) {
+      .crop-card {
+        flex: initial;
+      }
+    }
+    .crop-card .icon { position: absolute; top: -10px; right: -10px; font-size: 80px; opacity: 0.05; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
+    .badge-success { background: var(--success-light); color: var(--success); }
+    .badge-warning { background: var(--warning-light); color: var(--warning); }
+    
+    .crop-name { font-size: 24px; font-weight: 700; color: var(--foreground); margin-bottom: 4px; }
+    .sown-date { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+    
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    .stat-box { background: var(--secondary-bg); padding: 12px; border-radius: 8px; }
+    .stat-box span { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+    .stat-box strong { font-size: 16px; font-weight: 600; }
+    
+    .progress-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .progress-bar-bg { flex: 1; height: 8px; background: var(--secondary-bg); border-radius: 999px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--success); border-radius: 999px; }
+    .stage-label { font-size: 12px; font-weight: 500; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">🌱</div><span>FarmAI</span></div>
+    <nav class="sidebar-nav">
+      <a href="index.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Home</a>
+      <a href="#" class="active"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg> My Crops</a>
+      <a href="disease.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg> Disease Scan</a>
+      <a href="weather.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg> Weather</a>
+      <a href="assistant.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> AI Assistant</a>
+    </nav>
+  </aside>
+
+  <nav class="bottom-nav">
+    <a href="index.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Home</span></a>
+    <a href="#" class="active"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg><span>Crops</span></a>
+    <a href="disease.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg><span>Scan</span></a>
+    <a href="weather.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg><span>Weather</span></a>
+    <a href="assistant.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span>Assistant</span></a>
+  </nav>
+
+  <main class="main">
+    <div class="header">
+      <div>
+        <h1>My Crops</h1>
+        <p>Manage and monitor your fields</p>
+      </div>
+      <button class="add-btn" onclick="alert('This is a static UI preview. Add Crop is disabled.')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Add Crop
+      </button>
+    </div>
+
+    <div class="crop-grid">
+      <div class="crop-card">
+        <div class="icon">🌾</div>
+        <span class="badge badge-success">🟢 Healthy</span>
+        <h2 class="crop-name">Rice (Basmati)</h2>
+        <p class="sown-date">Sown: Jul 12, 2026 • Area: 2.5 Acres</p>
+        <div class="stats">
+          <div class="stat-box"><span>Est. Harvest</span><strong>Oct 15, 2026</strong></div>
+          <div class="stat-box"><span>Last Fertilized</span><strong>4 days ago</strong></div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 45%;"></div></div>
+          <span class="stage-label">Day 45 / 120</span>
+        </div>
+      </div>
+      
+      <div class="crop-card">
+        <div class="icon">🌽</div>
+        <span class="badge badge-warning">⚠️ Needs Water</span>
+        <h2 class="crop-name">Maize</h2>
+        <p class="sown-date">Sown: Aug 01, 2026 • Area: 1.2 Acres</p>
+        <div class="stats">
+          <div class="stat-box"><span>Est. Harvest</span><strong>Nov 20, 2026</strong></div>
+          <div class="stat-box"><span>Last Watered</span><strong>6 days ago</strong></div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 20%;"></div></div>
+          <span class="stage-label">Day 25 / 110</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

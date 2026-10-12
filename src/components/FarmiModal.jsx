@@ -15,8 +15,8 @@ const FarmiModal = ({ isOpen, onClose }) => {
         </button>
         <div className="farmi-modal-content">
           <iframe 
-            src="http://localhost:3000/en" 
-            title="FarmAI Landing Page"
+            src="/farmai-ppt/index.html" 
+            title="FarmAI Presentation"
             className="farmi-iframe"
             frameBorder="0"
             allowFullScreen
